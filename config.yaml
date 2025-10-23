@@ -22,7 +22,7 @@ schema:
   refresh_token: password
   operator_id: int
 ingress_port: 8080
-ingress_entry: /pages/home.html
+ingress_entry: pages/home.html
 ports:
   8080/tcp: null
 ports_description:
