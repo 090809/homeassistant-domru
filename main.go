@@ -107,6 +107,7 @@ func main() {
 	haURL, err := homeassistant.GetHomeAssistantNetworkAddress()
 	if err != nil {
 		haURL = ""
+		logger.Error("Failed to get Home Assistant network address, using empty URL", "error", err.Error())
 	}
 
 	mqttIntegration := homeassistant.NewMqttIntegration(
