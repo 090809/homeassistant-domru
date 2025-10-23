@@ -1,5 +1,5 @@
 name: "Domru Proxy"
-version: "0.1.6"
+version: "0.1.7"
 slug: "domru_proxy"
 description: "Reverse proxy for Domru API with authentication"
 arch:
@@ -14,13 +14,13 @@ ingress: true
 map:
   - data:rw
 options:
-  log_level: "info"
-  refresh_token: ""
-  operator_id: 0
+  log-level: "info"
+  refresh-token: ""
+  operator-id: 0
 schema:
-  log_level: list(trace|debug|info|warn|error)
-  refresh_token: password
-  operator_id: int
+  log-level: list(trace|debug|info|warn|error)
+  refresh-token: password
+  operator-id: int
 ingress_port: 8080
 ingress_entry: pages/home.html
 ports:
