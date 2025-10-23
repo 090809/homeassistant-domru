@@ -59,7 +59,8 @@ func (h *Handler) renderTemplate(w http.ResponseWriter, templateName string, dat
 func getTemplateFunctions() template.FuncMap {
 	return template.FuncMap{
 		"getSnapshotUrl": constants.GetSnapshotUrl,
-		"getStreamUrl":   constants.GetCustomStreamUrl,
+		"getStreamUrl":   constants.GetCameraStreamUrl,
+		"getOpenDoorUrl": constants.GetOpenDoorUrl,
 		"ha_host": func() string {
 			host, err := homeassistant.GetHomeAssistantNetworkAddressWithPort()
 			if err != nil {
