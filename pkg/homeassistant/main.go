@@ -41,12 +41,15 @@ func GetHomeAssistantNetworkAddress() (string, error) {
 		supervisor_token string
 	)
 
-	if val, ok := os.LookupEnv("SUPERVISOR_TOKEN"); ok {
-		supervisor_token = val
-		log.Printf("supervisor_token %s", supervisor_token)
-	} else {
-		return "", fmt.Errorf("supervisor token not set")
+	val, ok := os.LookupEnv("SUPERVISOR_TOKEN")
+	if !ok {
+		log.Println("SUPERVISOR_TOKEN not set, addon is likely not running in a Home Assistant production environment. This is okay for local development.")
+		// Fallback for local development or when not in HA environment.
+		// You might want to make "localhost" configurable.
+		return "localhost", nil
 	}
+	supervisor_token = val
+	log.Printf("supervisor_token found, attempting to get network address from supervisor.")
 
 	url := constants.API_HA_NETWORK
 
@@ -77,13 +80,9 @@ func GetHomeAssistantNetworkAddress() (string, error) {
 		}
 	}()
 
-	// log.Printf("%+v", resp)
-
 	if body, err = io.ReadAll(resp.Body); err != nil {
 		return "", fmt.Errorf("supervisor ip ReadAll %s", err.Error())
 	}
-
-	// log.Println(string(body))
 
 	var haconfig HAConfig
 

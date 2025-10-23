@@ -21,6 +21,7 @@ schema:
   log_level: list(trace|debug|info|warn|error)
   refresh_token: password
   operator_id: int
+web: 8080/tcp
 ports:
   8080/tcp: null
 ports_description:
