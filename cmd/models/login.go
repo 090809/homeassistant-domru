@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/moleus/domru/pkg/domru/models"
+	"github.com/090809/homeassistant-domru/pkg/domru/models"
 )
 
 type AccountsPageData struct {

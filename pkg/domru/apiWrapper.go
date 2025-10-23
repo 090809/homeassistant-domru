@@ -7,11 +7,11 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/moleus/domru/pkg/auth"
-	"github.com/moleus/domru/pkg/domru/constants"
-	"github.com/moleus/domru/pkg/domru/helpers"
-	myhttp "github.com/moleus/domru/pkg/domru/http"
-	"github.com/moleus/domru/pkg/domru/models"
+	"github.com/090809/homeassistant-domru/pkg/auth"
+	"github.com/090809/homeassistant-domru/pkg/domru/constants"
+	"github.com/090809/homeassistant-domru/pkg/domru/helpers"
+	myhttp "github.com/090809/homeassistant-domru/pkg/domru/http"
+	"github.com/090809/homeassistant-domru/pkg/domru/models"
 )
 
 type APIWrapper struct {

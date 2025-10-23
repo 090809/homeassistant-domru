@@ -6,8 +6,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/moleus/domru/pkg/domru/models"
-	"github.com/moleus/domru/pkg/domru/sanitizing_utils"
+	"github.com/090809/homeassistant-domru/pkg/domru/models"
+	"github.com/090809/homeassistant-domru/pkg/domru/sanitizing_utils"
 )
 
 type Credentials struct {

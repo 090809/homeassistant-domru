@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/moleus/domru/pkg/auth"
+	"github.com/090809/homeassistant-domru/pkg/auth"
 )
 
 func (h *Handler) SubmitSmsCodeHandler(w http.ResponseWriter, r *http.Request) {

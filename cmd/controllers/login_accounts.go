@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/moleus/domru/cmd/models"
-	"github.com/moleus/domru/pkg/auth"
-	models2 "github.com/moleus/domru/pkg/domru/models"
+	"github.com/090809/homeassistant-domru/cmd/models"
+	"github.com/090809/homeassistant-domru/pkg/auth"
+	models2 "github.com/090809/homeassistant-domru/pkg/domru/models"
 )
 
 func (h *Handler) SelectAccountHandler(w http.ResponseWriter, r *http.Request) {

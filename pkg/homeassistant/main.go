@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/moleus/domru/pkg/domru/constants"
+	"github.com/090809/homeassistant-domru/pkg/domru/constants"
 )
 
 type HAConfig struct {

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	myhttp "github.com/moleus/domru/pkg/domru/http"
+	myhttp "github.com/090809/homeassistant-domru/pkg/domru/http"
 )
 
 type TokenRefreshError struct {

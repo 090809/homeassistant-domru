@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/moleus/domru/cmd/models"
-	"github.com/moleus/domru/pkg/auth"
-	"github.com/moleus/domru/pkg/domru/helpers"
+	"github.com/090809/homeassistant-domru/cmd/models"
+	"github.com/090809/homeassistant-domru/pkg/auth"
+	"github.com/090809/homeassistant-domru/pkg/domru/helpers"
 )
 
 func (h *Handler) LoginWithPasswordHandler(w http.ResponseWriter, r *http.Request) {

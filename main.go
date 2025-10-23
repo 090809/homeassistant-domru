@@ -15,15 +15,15 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
-	"github.com/moleus/domru/cmd/controllers"
-	"github.com/moleus/domru/pkg/auth"
-	"github.com/moleus/domru/pkg/authorizedhttp"
-	"github.com/moleus/domru/pkg/domru"
-	"github.com/moleus/domru/pkg/domru/constants"
-	"github.com/moleus/domru/pkg/domru/sanitizing_utils"
-	"github.com/moleus/domru/pkg/logging"
-	"github.com/moleus/domru/pkg/reverseproxy"
-	"github.com/moleus/domru/pkg/tokenmanagement"
+	"github.com/090809/homeassistant-domru/cmd/controllers"
+	"github.com/090809/homeassistant-domru/pkg/auth"
+	"github.com/090809/homeassistant-domru/pkg/authorizedhttp"
+	"github.com/090809/homeassistant-domru/pkg/domru"
+	"github.com/090809/homeassistant-domru/pkg/domru/constants"
+	"github.com/090809/homeassistant-domru/pkg/domru/sanitizing_utils"
+	"github.com/090809/homeassistant-domru/pkg/logging"
+	"github.com/090809/homeassistant-domru/pkg/reverseproxy"
+	"github.com/090809/homeassistant-domru/pkg/tokenmanagement"
 )
 
 //go:embed templates/*

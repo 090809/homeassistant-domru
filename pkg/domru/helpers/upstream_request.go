@@ -11,7 +11,7 @@ import (
 	"net/url"
 	"time"
 
-	myhttp "github.com/moleus/domru/pkg/domru/http"
+	myhttp "github.com/090809/homeassistant-domru/pkg/domru/http"
 )
 
 var defaultHeaders = map[string]string{

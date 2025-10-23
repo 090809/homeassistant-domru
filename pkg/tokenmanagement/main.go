@@ -5,10 +5,10 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/moleus/domru/pkg/auth"
-	"github.com/moleus/domru/pkg/domru/constants"
-	"github.com/moleus/domru/pkg/domru/helpers"
-	"github.com/moleus/domru/pkg/domru/models"
+	"github.com/090809/homeassistant-domru/pkg/auth"
+	"github.com/090809/homeassistant-domru/pkg/domru/constants"
+	"github.com/090809/homeassistant-domru/pkg/domru/helpers"
+	"github.com/090809/homeassistant-domru/pkg/domru/models"
 )
 
 type ValidTokenProvider struct {
