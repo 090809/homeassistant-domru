@@ -1,6 +1,8 @@
 package models
 
-import "github.com/090809/homeassistant-domru/pkg/domru/models"
+import (
+	models "github.com/090809/homeassistant-domru/internal/domru/models"
+)
 
 type HomePageData struct {
 	BaseURL    string

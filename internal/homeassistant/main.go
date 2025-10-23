@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/090809/homeassistant-domru/pkg/domru/constants"
+	"github.com/090809/homeassistant-domru/internal/domru/constants"
 )
 
 type HAConfig struct {
@@ -45,8 +45,8 @@ func GetHomeAssistantNetworkAddress() (string, error) {
 	if !ok {
 		log.Println("SUPERVISOR_TOKEN not set, addon is likely not running in a Home Assistant production environment. This is okay for local development.")
 		// Fallback for local development or when not in HA environment.
-		// You might want to make "localhost" configurable.
-		return "localhost", nil
+		// You might want to make "" configurable.
+		return "", nil
 	}
 	supervisor_token = val
 	log.Printf("supervisor_token found, attempting to get network address from supervisor.")

@@ -7,11 +7,11 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/090809/homeassistant-domru/internal/domru"
+	"github.com/090809/homeassistant-domru/internal/domru/constants"
+	"github.com/090809/homeassistant-domru/internal/domru/models"
+	"github.com/090809/homeassistant-domru/internal/homeassistant"
 	"github.com/090809/homeassistant-domru/pkg/auth"
-	"github.com/090809/homeassistant-domru/pkg/domru"
-	"github.com/090809/homeassistant-domru/pkg/domru/constants"
-	"github.com/090809/homeassistant-domru/pkg/domru/models"
-	"github.com/090809/homeassistant-domru/pkg/homeassistant"
 )
 
 type Handler struct {

@@ -6,9 +6,9 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/090809/homeassistant-domru/pkg/domru/constants"
-	"github.com/090809/homeassistant-domru/pkg/domru/helpers"
-	"github.com/090809/homeassistant-domru/pkg/domru/models"
+	"github.com/090809/homeassistant-domru/internal/domru/constants"
+	"github.com/090809/homeassistant-domru/internal/domru/helpers"
+	"github.com/090809/homeassistant-domru/internal/domru/models"
 )
 
 const (

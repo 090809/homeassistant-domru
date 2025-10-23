@@ -7,11 +7,11 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/090809/homeassistant-domru/internal/domru/constants"
+	"github.com/090809/homeassistant-domru/internal/domru/helpers"
+	"github.com/090809/homeassistant-domru/internal/domru/http"
+	"github.com/090809/homeassistant-domru/internal/domru/models"
 	"github.com/090809/homeassistant-domru/pkg/auth"
-	"github.com/090809/homeassistant-domru/pkg/domru/constants"
-	"github.com/090809/homeassistant-domru/pkg/domru/helpers"
-	myhttp "github.com/090809/homeassistant-domru/pkg/domru/http"
-	"github.com/090809/homeassistant-domru/pkg/domru/models"
 )
 
 type APIWrapper struct {
@@ -136,4 +136,21 @@ func (w *APIWrapper) GetSubscriberProfile() (models.SubscriberProfilesResponse, 
 		return models.SubscriberProfilesResponse{}, fmt.Errorf("request subscriber profile: %w", err)
 	}
 	return profile, nil
+}
+
+func (w *APIWrapper) OpenDoor(placeID, accessControl int) error {
+	openDoorURL := fmt.Sprintf("%s/rest/v1/places/%d/accesscontrols/%d/actions", w.baseURL, placeID, accessControl)
+
+	_, err := helpers.NewUpstreamRequest(
+		openDoorURL,
+		helpers.WithClient(w.authClient),
+		helpers.WithBody(map[string]string{
+			"name": "accessControlOpen",
+		}),
+	).SendRequest(http.MethodPost)
+
+	if err != nil {
+		return fmt.Errorf("open door: %w", err)
+	}
+	return nil
 }

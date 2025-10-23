@@ -10,9 +10,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/090809/homeassistant-domru/internal/domru/helpers"
+	"github.com/090809/homeassistant-domru/internal/domru/models"
 	"github.com/090809/homeassistant-domru/pkg/antiblock_client"
-	"github.com/090809/homeassistant-domru/pkg/domru/helpers"
-	"github.com/090809/homeassistant-domru/pkg/domru/models"
 )
 
 const (

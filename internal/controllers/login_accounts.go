@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
+	domruModels "github.com/090809/homeassistant-domru/internal/domru/models"
 	"github.com/090809/homeassistant-domru/internal/models"
 	"github.com/090809/homeassistant-domru/pkg/auth"
-	models2 "github.com/090809/homeassistant-domru/pkg/domru/models"
 )
 
 func (h *Handler) SelectAccountHandler(w http.ResponseWriter, r *http.Request) {
@@ -24,7 +24,7 @@ func (h *Handler) SelectAccountHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var selectedAccount models2.Account
+	var selectedAccount domruModels.Account
 	for _, account := range accounts {
 		if account.AccountID == nil {
 			continue

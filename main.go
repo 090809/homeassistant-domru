@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"embed"
 	"fmt"
 	"log"
@@ -8,7 +9,9 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/hashicorp/go-retryablehttp"
@@ -16,11 +19,12 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/090809/homeassistant-domru/internal/controllers"
+	"github.com/090809/homeassistant-domru/internal/domru"
+	"github.com/090809/homeassistant-domru/internal/domru/constants"
+	"github.com/090809/homeassistant-domru/internal/domru/sanitizing_utils"
+	"github.com/090809/homeassistant-domru/internal/homeassistant"
 	"github.com/090809/homeassistant-domru/pkg/auth"
 	"github.com/090809/homeassistant-domru/pkg/authorizedhttp"
-	"github.com/090809/homeassistant-domru/pkg/domru"
-	"github.com/090809/homeassistant-domru/pkg/domru/constants"
-	"github.com/090809/homeassistant-domru/pkg/domru/sanitizing_utils"
 	"github.com/090809/homeassistant-domru/pkg/logging"
 	"github.com/090809/homeassistant-domru/pkg/reverseproxy"
 	"github.com/090809/homeassistant-domru/pkg/tokenmanagement"
@@ -99,6 +103,19 @@ func main() {
 
 	domruAPI := domru.NewDomruAPI(authClient)
 	domruAPI.Logger = logger
+
+	haURL, err := homeassistant.GetHomeAssistantNetworkAddress()
+	if err != nil {
+		haURL = ""
+	}
+
+	mqttIntegration := homeassistant.NewMqttIntegration(
+		domruAPI,
+		logger,
+		haURL,
+	)
+	go mqttIntegration.Start()
+
 	handlers := controllers.NewHandlers(templateFs, credentialsStore, domruAPI)
 	handlers.Logger = logger
 
@@ -139,10 +156,30 @@ func main() {
 		IdleTimeout:  50 * time.Second,
 	}
 
-	err = server.ListenAndServe()
-	if err != nil {
-		log.Fatal(err)
+	go func() {
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Could not listen on %s: %v\n", listenAddr, err)
+		}
+	}()
+
+	// Graceful shutdown
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
+	<-stop
+
+	logger.Info("Shutting down server...")
+
+	// Shutdown MQTT client
+	mqttIntegration.Stop()
+
+	// Shutdown HTTP server
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := server.Shutdown(ctx); err != nil {
+		logger.Error("Server shutdown failed", "error", err)
 	}
+
+	logger.Info("Server gracefully stopped")
 }
 
 func overrideCredentialsWithFlags(credentialsStore *auth.FileCredentialsStore, logger *slog.Logger) {
