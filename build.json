@@ -3,11 +3,11 @@
         "GO_BUILD_FLAGS": "-ldflags \"-w -s\""
     },
     "build_from": {
-      "aarch64": "ghcr.io/home-assistant/aarch64-base-go:1.22",
-      "amd64": "ghcr.io/home-assistant/amd64-base-go:1.22",
-      "armhf": "ghcr.io/home-assistant/armhf-base-go:1.22",
-      "armv7": "ghcr.io/home-assistant/armv7-base-go:1.22",
-      "i386": "ghcr.io/home-assistant/i386-base-go:1.22"
+      "aarch64": "ghcr.io/home-assistant/aarch64-base-go:1.25",
+      "amd64": "ghcr.io/home-assistant/amd64-base-go:1.25",
+      "armhf": "ghcr.io/home-assistant/armhf-base-go:1.25",
+      "armv7": "ghcr.io/home-assistant/armv7-base-go:1.25",
+      "i386": "ghcr.io/home-assistant/i386-base-go:1.25"
     },
     "squash": false
 }
