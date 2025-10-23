@@ -2,11 +2,12 @@ package antiblock_client
 
 import (
 	"bytes"
+	"log"
+	"net/http"
+
 	fhttp "github.com/bogdanfinn/fhttp"
 	tlsclient "github.com/bogdanfinn/tls-client"
 	"github.com/bogdanfinn/tls-client/profiles"
-	"log"
-	"net/http"
 )
 
 type AntiblockClient struct {

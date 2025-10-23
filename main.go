@@ -15,7 +15,7 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
-	"github.com/090809/homeassistant-domru/cmd/controllers"
+	"github.com/090809/homeassistant-domru/internal/controllers"
 	"github.com/090809/homeassistant-domru/pkg/auth"
 	"github.com/090809/homeassistant-domru/pkg/authorizedhttp"
 	"github.com/090809/homeassistant-domru/pkg/domru"

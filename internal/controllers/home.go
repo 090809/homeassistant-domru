@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/090809/homeassistant-domru/cmd/models"
+	"github.com/090809/homeassistant-domru/internal/models"
 	"github.com/090809/homeassistant-domru/pkg/authorizedhttp"
 )
 
