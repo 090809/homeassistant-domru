@@ -12,6 +12,9 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-retryablehttp"
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
+
 	"github.com/moleus/domru/cmd/controllers"
 	"github.com/moleus/domru/pkg/auth"
 	"github.com/moleus/domru/pkg/authorizedhttp"
@@ -21,8 +24,6 @@ import (
 	"github.com/moleus/domru/pkg/logging"
 	"github.com/moleus/domru/pkg/reverseproxy"
 	"github.com/moleus/domru/pkg/tokenmanagement"
-	"github.com/spf13/pflag"
-	"github.com/spf13/viper"
 )
 
 //go:embed templates/*
@@ -34,11 +35,13 @@ const (
 	flagOperatorID      = "operator-id"
 	flagCredentialsFile = "credentials"
 	flagLogLevel        = "log-level"
+	flagHaConfigFile    = "ha-config"
 )
 
 func initFlags() {
-	pflag.Int(flagPort, 18000, "listen port")
-	pflag.String(flagCredentialsFile, "/share/domofon/accounts.json", "credentials file path (i.e: /usr/domofon/credentials.json")
+	pflag.Int(flagPort, 8080, "listen port")
+	pflag.String(flagHaConfigFile, "/data/options.json", "home assistant config file")
+	pflag.String(flagCredentialsFile, "/data/accounts.json", "credentials file path (i.e: /data/accounts.json")
 	pflag.String(flagLogLevel, "info", "log level")
 	pflag.String(flagRefreshToken, "", "refresh token")
 	pflag.Int(flagOperatorID, 0, "operator id")
@@ -47,6 +50,14 @@ func initFlags() {
 	err := viper.BindPFlags(pflag.CommandLine)
 	if err != nil {
 		log.Fatalf("Unable to bind flags: %v", err)
+	}
+
+	viper.SetConfigFile(viper.GetString(flagHaConfigFile))
+	viper.SetConfigType("json")
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+			log.Printf("Error reading config file: %s", err)
+		}
 	}
 
 	replacer := strings.NewReplacer("-", "_")

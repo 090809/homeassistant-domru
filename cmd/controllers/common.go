@@ -58,21 +58,27 @@ func (h *Handler) renderTemplate(w http.ResponseWriter, templateName string, dat
 
 func getTemplateFunctions() template.FuncMap {
 	return template.FuncMap{
-		"getSnapshotUrl":     constants.GetSnapshotUrl,
-		"getOpenDoorUrl":     constants.GetOpenDoorUrl,
-		"getCameraStreamUrl": constants.GetCameraStreamUrl,
+		"getSnapshotUrl": constants.GetSnapshotUrl,
+		"getStreamUrl":   constants.GetCustomStreamUrl,
+		"ha_host": func() string {
+			host, err := homeassistant.GetHomeAssistantNetworkAddressWithPort()
+			if err != nil {
+				return ""
+			}
+			return host
+		},
 	}
 }
 func (h *Handler) determineBaseURL(r *http.Request) string {
 	var scheme string
-	var host string
+	host := r.Host
 
 	if scheme = r.URL.Scheme; scheme == "" {
 		scheme = "http"
 	}
 	haHost, haNetworkErr := homeassistant.GetHomeAssistantNetworkAddress()
-	if haNetworkErr != nil {
-		host = r.Host
+	if haNetworkErr == nil {
+		host = haHost
 	}
 	ingressPath := r.Header.Get("X-Ingress-Path")
 	if ingressPath == "" && haHost != "" {

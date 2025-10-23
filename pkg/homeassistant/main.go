@@ -25,6 +25,14 @@ type HAConfig struct {
 	} `json:"data"`
 }
 
+func GetHomeAssistantNetworkAddressWithPort() (string, error) {
+	host, err := GetHomeAssistantNetworkAddress()
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%s:8080", host), nil
+}
+
 func GetHomeAssistantNetworkAddress() (string, error) {
 	var (
 		body             []byte

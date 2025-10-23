@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	phoneNumberRegex = `^\+7\d{10}$`
+	phoneNumberRegex = `^\+?7\d{10}$`
 )
 
 type SmsCodeGetter func() (string, error)
@@ -62,9 +62,9 @@ func (a *PhoneNumberAuthenticator) requestConfirmationCode(account models.Accoun
 		return fmt.Errorf("account id is nil. Account: %v", account)
 	}
 
-	if account.ProfileID == nil {
-		return fmt.Errorf("profile id is nil. Account: %v", account)
-	}
+	//if account.ProfileID == nil {
+	//	return fmt.Errorf("profile id is nil. Account: %v", account)
+	//}
 
 	err := helpers.NewUpstreamRequest(confirmURL, helpers.WithBody(account)).Send(http.MethodPost, nil)
 	if err != nil {
@@ -75,9 +75,9 @@ func (a *PhoneNumberAuthenticator) requestConfirmationCode(account models.Accoun
 
 func (a *PhoneNumberAuthenticator) sendConfirmationCode(smsCode string, account models.Account) (models.AuthenticationResponse, error) {
 	confirmURL := fmt.Sprintf("%s/auth/v3/auth/%s/confirmation", constants.BaseUrl, a.phoneNumber)
-	if account.ProfileID == nil {
-		return models.AuthenticationResponse{}, fmt.Errorf("profile id is nil. Account: %v", account)
-	}
+	//if account.ProfileID == nil {
+	//	return models.AuthenticationResponse{}, fmt.Errorf("profile id is nil. Account: %v", account)
+	//}
 	if account.AccountID == nil {
 		return models.AuthenticationResponse{}, fmt.Errorf("account id is nil. Account: %v", account)
 	}

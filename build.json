@@ -1,11 +1,13 @@
 {
-    "args": {},
+    "args": {
+        "GO_BUILD_FLAGS": "-ldflags \"-w -s\""
+    },
     "build_from": {
-      "aarch64": "hassioaddons/base-aarch64:7.0.1",
-      "amd64": "hassioaddons/base-amd64:7.0.1",
-      "armhf": "hassioaddons/base-armhf:7.0.1",
-      "armv7": "hassioaddons/base-armv7:7.0.1",
-      "i386": "hassioaddons/base-i386:7.0.1"
+      "aarch64": "ghcr.io/home-assistant/aarch64-base-go:1.22",
+      "amd64": "ghcr.io/home-assistant/amd64-base-go:1.22",
+      "armhf": "ghcr.io/home-assistant/armhf-base-go:1.22",
+      "armv7": "ghcr.io/home-assistant/armv7-base-go:1.22",
+      "i386": "ghcr.io/home-assistant/i386-base-go:1.22"
     },
     "squash": false
 }

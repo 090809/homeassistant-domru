@@ -1,0 +1,28 @@
+
+name: "Domru Proxy"
+version: "0.1.0"
+slug: "domru_proxy"
+description: "Reverse proxy for Domru API with authentication"
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+init: false
+panel_icon: mdi:camera
+ingress: true
+map:
+  - data:rw
+options:
+  log_level: "info"
+  refresh_token: ""
+  operator_id: 0
+schema:
+  log_level: list(trace|debug|info|warn|error)
+  refresh_token: password
+  operator_id: int
+ports:
+  8080/tcp: null
+ports_description:
+  8080/tcp: "Web interface"
