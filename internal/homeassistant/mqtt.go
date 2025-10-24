@@ -229,25 +229,6 @@ func (m *MqttIntegration) commandHandler(_ mqtt.Client, msg mqtt.Message) {
 
 	var acID, placeID int
 
-	_, err := fmt.Sscanf(topic, "domru/domru-door_%d_%d-open/command", &acID, &placeID)
-	if err != nil {
-		m.logger.Error("Failed to parse access control ID from topic", "topic", topic, "error", err)
-		return
-	}
-
-	m.logger.Info("Opening door", "placeID", placeID, "accessControlID", acID)
-	if err := m.domruAPI.OpenDoor(placeID, acID); err != nil {
-		m.logger.Error("Failed to open door", "error", err)
-	}
-}
-
-func (m *MqttIntegration) stateHandler(_ mqtt.Client, msg mqtt.Message) {
-	topic := msg.Topic()
-	command := string(msg.Payload())
-	m.logger.Info("Received command", "topic", topic, "command", command)
-
-	var acID, placeID int
-
 	stateTopic := fmt.Sprintf("domru/domru-door_%d_%d-open/state", acID, placeID)
 
 	switch command {
@@ -270,4 +251,8 @@ func (m *MqttIntegration) stateHandler(_ mqtt.Client, msg mqtt.Message) {
 	default:
 		m.logger.Warn("Received unknown command", "command", command)
 	}
+}
+
+func (m *MqttIntegration) stateHandler(_ mqtt.Client, msg mqtt.Message) {
+
 }
