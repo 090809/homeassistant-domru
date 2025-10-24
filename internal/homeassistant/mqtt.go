@@ -48,8 +48,8 @@ func NewMqttIntegration(
 func (m *MqttIntegration) Start() {
 	var mqttHost string
 	if _, ok := os.LookupEnv("SUPERVISOR_TOKEN"); ok {
-		m.haHost = "172.30.32.1"
-		mqttHost = "172.30.32.1"
+		m.haHost = "https://home.pallam.dev/"
+		mqttHost = "addon_core_mosquitto"
 	} else {
 		return
 	}
@@ -118,6 +118,7 @@ func (m *MqttIntegration) discoverDevices() {
 			"accessControls", data.Place.AccessControls,
 			"cameras", len(data.Place.Cameras),
 		)
+
 		for _, ac := range data.Place.AccessControls {
 			m.publishDoorButton(ac, data.Place.ID)
 		}
