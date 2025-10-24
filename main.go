@@ -104,17 +104,7 @@ func main() {
 	domruAPI := domru.NewDomruAPI(authClient)
 	domruAPI.Logger = logger
 
-	haURL, err := homeassistant.GetHomeAssistantNetworkAddress()
-	if err != nil {
-		haURL = ""
-		logger.Error("Failed to get Home Assistant network address, using empty URL", "error", err.Error())
-	}
-
-	mqttIntegration := homeassistant.NewMqttIntegration(
-		domruAPI,
-		logger,
-		haURL,
-	)
+	mqttIntegration := homeassistant.NewMqttIntegration(domruAPI, logger)
 	go mqttIntegration.Start()
 
 	handlers := controllers.NewHandlers(templateFs, credentialsStore, domruAPI)

@@ -72,13 +72,6 @@ func (m *MqttIntegration) Start() {
 		m.logger.Error("Failed to connect to MQTT broker", "error", token.Error())
 		return
 	}
-
-	host, err := GetHomeAssistantNetworkAddressWithPort()
-	if err != nil {
-		m.logger.Error("Could not determine Home Assistant host for icon URL", "error", err)
-	} else {
-		m.haHost = host
-	}
 }
 
 func (m *MqttIntegration) connectHandler(client mqtt.Client) {
