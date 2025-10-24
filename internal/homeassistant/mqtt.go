@@ -90,12 +90,21 @@ func (m *MqttIntegration) connectHandler(client mqtt.Client) {
 
 	// Subscribe to command topics
 	commandTopic := "domru/+/command"
-	token := m.client.Subscribe(commandTopic, 1, m.commandHandler)
-	token.Wait()
-	if token.Error() != nil {
-		m.logger.Error("Failed to subscribe to command topic", "error", token.Error())
+	commandToken := m.client.Subscribe(commandTopic, 1, m.commandHandler)
+	commandToken.Wait()
+	if commandToken.Error() != nil {
+		m.logger.Error("Failed to subscribe to command topic", "error", commandToken.Error())
 	} else {
 		m.logger.Info("Subscribed to command topic", "topic", commandTopic)
+	}
+
+	stateTopic := "domru/+/state"
+	stateToken := m.client.Subscribe(stateTopic, 1, m.stateHandler)
+	stateToken.Wait()
+	if stateToken.Error() != nil {
+		m.logger.Error("Failed to subscribe to state topic", "error", stateToken.Error())
+	} else {
+		m.logger.Info("Subscribed to state topic", "topic", stateTopic)
 	}
 
 	go m.discoverDevices()
@@ -131,7 +140,7 @@ func (m *MqttIntegration) discoverDevices() {
 		)
 
 		for _, ac := range data.Place.AccessControls {
-			m.publishDoorButton(ac, data.Place.ID)
+			m.publishDoorLock(ac, data.Place.ID)
 		}
 	}
 }
@@ -144,27 +153,40 @@ type MqttDevice struct {
 	Manufacturer string   `json:"manufacturer"`
 }
 
-// MqttButton represents the discovery payload for a button entity.
-type MqttButton struct {
+// MqttLock represents the discovery payload for a lock entity.
+type MqttLock struct {
 	Name              string     `json:"name"`
 	UniqueID          string     `json:"unique_id"`
 	CommandTopic      string     `json:"command_topic"`
+	StateTopic        string     `json:"state_topic"`
+	PayloadUnlock     string     `json:"payload_unlock"`
+	PayloadLock       string     `json:"payload_lock"`
+	StateUnlocked     string     `json:"state_unlocked"`
+	StateLocked       string     `json:"state_locked"`
+	Optimistic        bool       `json:"optimistic"`
 	Device            MqttDevice `json:"device"`
 	Icon              string     `json:"icon,omitempty"`
 	EntityPicture     string     `json:"entity_picture,omitempty"`
 	AvailabilityTopic string     `json:"availability_topic"`
 }
 
-func (m *MqttIntegration) publishDoorButton(ac models.AccessControl, placeID int) {
+func (m *MqttIntegration) publishDoorLock(ac models.AccessControl, placeID int) {
 	deviceID := fmt.Sprintf("domru-door_%d_%d", ac.ID, placeID)
 	entityID := fmt.Sprintf("%s-open", deviceID)
-	discoveryTopic := fmt.Sprintf("homeassistant/button/%s/config", entityID)
+	discoveryTopic := fmt.Sprintf("homeassistant/lock/%s/config", entityID)
 	commandTopic := fmt.Sprintf("domru/%s/command", entityID)
+	stateTopic := fmt.Sprintf("domru/%s/state", entityID)
 
-	payload := MqttButton{
-		Name:         fmt.Sprintf("Open %s", ac.Name),
-		UniqueID:     entityID,
-		CommandTopic: commandTopic,
+	payload := MqttLock{
+		Name:          fmt.Sprintf("Open %s", ac.Name),
+		UniqueID:      entityID,
+		CommandTopic:  commandTopic,
+		StateTopic:    stateTopic,
+		PayloadUnlock: "UNLOCK",
+		PayloadLock:   "LOCK",
+		StateUnlocked: "UNLOCKED",
+		StateLocked:   "LOCKED",
+		Optimistic:    true,
 		Device: MqttDevice{
 			Identifiers:  []string{deviceID},
 			Name:         ac.Name,
@@ -182,7 +204,7 @@ func (m *MqttIntegration) publishDoorButton(ac models.AccessControl, placeID int
 
 	jsonPayload, err := json.Marshal(payload)
 	if err != nil {
-		m.logger.Error("Failed to marshal button discovery payload", "error", err)
+		m.logger.Error("Failed to marshal lock discovery payload", "error", err)
 		return
 	}
 
@@ -193,13 +215,17 @@ func (m *MqttIntegration) publishDoorButton(ac models.AccessControl, placeID int
 	if token.Error() != nil {
 		m.logger.Error("Failed to publish discovery topic", "error", token.Error())
 	} else {
-		m.logger.Info("Published discovery topic for doorbutton", "topic", discoveryTopic)
+		m.logger.Info("Published discovery topic for door lock", "topic", discoveryTopic)
 	}
+
+	// Set initial state to LOCKED
+	m.client.Publish(stateTopic, 1, true, "LOCKED")
 }
 
 func (m *MqttIntegration) commandHandler(_ mqtt.Client, msg mqtt.Message) {
 	topic := msg.Topic()
-	m.logger.Debug("Received command", "topic", topic)
+	command := string(msg.Payload())
+	m.logger.Info("Received command", "topic", topic, "command", command)
 
 	var acID, placeID int
 
@@ -212,5 +238,36 @@ func (m *MqttIntegration) commandHandler(_ mqtt.Client, msg mqtt.Message) {
 	m.logger.Info("Opening door", "placeID", placeID, "accessControlID", acID)
 	if err := m.domruAPI.OpenDoor(placeID, acID); err != nil {
 		m.logger.Error("Failed to open door", "error", err)
+	}
+}
+
+func (m *MqttIntegration) stateHandler(_ mqtt.Client, msg mqtt.Message) {
+	topic := msg.Topic()
+	command := string(msg.Payload())
+	m.logger.Info("Received command", "topic", topic, "command", command)
+
+	var acID, placeID int
+
+	stateTopic := fmt.Sprintf("domru/domru-door_%d_%d-open/state", acID, placeID)
+
+	switch command {
+	case "UNLOCK":
+		m.logger.Info("Opening door", "placeID", placeID, "accessControlID", acID)
+		if err := m.domruAPI.OpenDoor(placeID, acID); err != nil {
+			m.logger.Error("Failed to open door", "error", err)
+			// Optionally publish a failure state or log
+			return
+		}
+
+		// Optimistically set state to UNLOCKED, then back to LOCKED after a delay
+		m.client.Publish(stateTopic, 1, true, "UNLOCKED")
+		time.AfterFunc(5*time.Second, func() {
+			m.client.Publish(stateTopic, 1, true, "LOCKED")
+		})
+	case "LOCK":
+		// The door locks automatically, so we just confirm the state.
+		m.client.Publish(stateTopic, 1, true, "LOCKED")
+	default:
+		m.logger.Warn("Received unknown command", "command", command)
 	}
 }
