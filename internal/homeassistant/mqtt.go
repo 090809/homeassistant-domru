@@ -89,7 +89,7 @@ func (m *MqttIntegration) connectHandler(client mqtt.Client) {
 	}
 
 	// Subscribe to command topics
-	commandTopic := "domru/domru-door_*/command"
+	commandTopic := "domru/+/command"
 	token := m.client.Subscribe(commandTopic, 1, m.commandHandler)
 	token.Wait()
 	if token.Error() != nil {
