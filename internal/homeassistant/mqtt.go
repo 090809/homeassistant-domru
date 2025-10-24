@@ -178,7 +178,8 @@ func (m *MqttIntegration) publishDoorButton(ac models.AccessControl, placeID int
 
 	// Publish discovery message
 	token := m.client.Publish(discoveryTopic, 1, true, jsonPayload)
-	token.Wait()
+	token.WaitTimeout(time.Second)
+
 	if token.Error() != nil {
 		m.logger.Error("Failed to publish discovery topic", "error", token.Error())
 	} else {
