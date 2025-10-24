@@ -228,6 +228,11 @@ func (m *MqttIntegration) commandHandler(_ mqtt.Client, msg mqtt.Message) {
 	m.logger.Info("Received command", "topic", topic, "command", command)
 
 	var acID, placeID int
+	_, err := fmt.Sscanf(topic, "domru/domru-door_%d_%d-open/command", &acID, &placeID)
+	if err != nil {
+		m.logger.Error("Failed to parse access control ID from topic", "topic", topic, "error", err)
+		return
+	}
 
 	stateTopic := fmt.Sprintf("domru/domru-door_%d_%d-open/state", acID, placeID)
 
