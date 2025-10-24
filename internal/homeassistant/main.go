@@ -86,6 +86,8 @@ func GetHomeAssistantNetworkAddress() (string, error) {
 
 	var haconfig HAConfig
 
+	log.Printf("supervisor ip response: %s", string(body))
+
 	if err := json.Unmarshal(body, &haconfig); err != nil {
 		return "", fmt.Errorf("supervisor ip Unmarshal %s", err.Error())
 	}
