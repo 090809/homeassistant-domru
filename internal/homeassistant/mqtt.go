@@ -145,7 +145,7 @@ type MqttButton struct {
 }
 
 func (m *MqttIntegration) publishDoorButton(ac models.AccessControl, placeID int) {
-	deviceID := fmt.Sprintf("domru-door:%d:%d", ac.ID, placeID)
+	deviceID := fmt.Sprintf("domru-door_%d_%d", ac.ID, placeID)
 	entityID := fmt.Sprintf("%s-open", deviceID)
 	discoveryTopic := fmt.Sprintf("homeassistant/button/%s/config", entityID)
 	commandTopic := fmt.Sprintf("domru/%s/command", entityID)
@@ -192,7 +192,7 @@ func (m *MqttIntegration) commandHandler(_ mqtt.Client, msg mqtt.Message) {
 
 	var acID, placeID int
 
-	_, err := fmt.Sscanf(topic, "domru/domru-door:%d:%d-open/command", &acID, &placeID)
+	_, err := fmt.Sscanf(topic, "domru/domru-door_%d_%d-open/command", &acID, &placeID)
 	if err != nil {
 		m.logger.Error("Failed to parse access control ID from topic", "topic", topic, "error", err)
 		return
