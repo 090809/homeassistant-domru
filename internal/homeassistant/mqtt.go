@@ -63,6 +63,9 @@ func (m *MqttIntegration) Start() {
 	opts.SetClientID(fmt.Sprintf("domru_proxy_%d", time.Now().Unix()))
 	opts.SetUsername(mqttUser)
 	opts.SetPassword(mqttPass)
+
+	opts.SetWill("domru_proxy/status", "offline", 1, true)
+
 	opts.OnConnect = m.connectHandler
 	opts.OnConnectionLost = m.connectionLostHandler
 
@@ -76,6 +79,14 @@ func (m *MqttIntegration) Start() {
 
 func (m *MqttIntegration) connectHandler(client mqtt.Client) {
 	m.logger.Info("Connected to MQTT broker")
+
+	aToken := client.Publish("domru_proxy/status", 1, true, "online")
+	aToken.Wait()
+	if aToken.Error() != nil {
+		m.logger.Error("Failed to publish online status", "error", aToken.Error())
+	} else {
+		m.logger.Info("Published online status to bridge availability topic")
+	}
 
 	// Subscribe to command topics
 	commandTopic := "domru/domru_door_*/command"
@@ -149,7 +160,6 @@ func (m *MqttIntegration) publishDoorButton(ac models.AccessControl, placeID int
 	entityID := fmt.Sprintf("%s-open", deviceID)
 	discoveryTopic := fmt.Sprintf("homeassistant/button/%s/config", entityID)
 	commandTopic := fmt.Sprintf("domru/%s/command", entityID)
-	availabilityTopic := fmt.Sprintf("domru/%s/status", deviceID)
 
 	payload := MqttButton{
 		Name:         fmt.Sprintf("Open %s", ac.Name),
@@ -162,7 +172,7 @@ func (m *MqttIntegration) publishDoorButton(ac models.AccessControl, placeID int
 			Manufacturer: "Dom.ru",
 		},
 		Icon:              "mdi:door",
-		AvailabilityTopic: availabilityTopic,
+		AvailabilityTopic: "domru_proxy/status",
 	}
 
 	if m.haHost != "" {
@@ -183,7 +193,7 @@ func (m *MqttIntegration) publishDoorButton(ac models.AccessControl, placeID int
 	if token.Error() != nil {
 		m.logger.Error("Failed to publish discovery topic", "error", token.Error())
 	} else {
-		m.logger.Debug("Published discovery topic for doorbutton", "topic", discoveryTopic)
+		m.logger.Info("Published discovery topic for doorbutton", "topic", discoveryTopic)
 	}
 }
 
