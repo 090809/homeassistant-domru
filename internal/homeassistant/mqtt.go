@@ -37,22 +37,21 @@ type MqttIntegration struct {
 func NewMqttIntegration(
 	domruAPI *domru.APIWrapper,
 	logger *slog.Logger,
-	haHost string,
 ) *MqttIntegration {
 	return &MqttIntegration{
 		domruAPI: domruAPI,
 		logger:   logger,
-		haHost:   haHost,
 	}
 }
 
 // Start connects to the MQTT broker and sets up device discovery.
 func (m *MqttIntegration) Start() {
-	mqttHost := m.haHost
-	if mqttHost == "" {
-		if _, ok := os.LookupEnv("SUPERVISOR_TOKEN"); ok {
-			mqttHost = "172.30.32.1"
-		}
+	var mqttHost string
+	if _, ok := os.LookupEnv("SUPERVISOR_TOKEN"); ok {
+		m.haHost = "172.30.32.1"
+		mqttHost = "172.30.32.1"
+	} else {
+		return
 	}
 
 	mqttPort := 1883
