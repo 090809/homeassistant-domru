@@ -112,7 +112,12 @@ func (m *MqttIntegration) discoverDevices() {
 	}
 
 	for _, data := range placesResponse.Data {
-		m.logger.Info("Discovering doorphone")
+		m.logger.Info("Discovering doorphone",
+			"placeID", data.Place.ID,
+			"accessControls (len)", len(data.Place.AccessControls),
+			"accessControls", data.Place.AccessControls,
+			"cameras", len(data.Place.Cameras),
+		)
 		for _, ac := range data.Place.AccessControls {
 			m.publishDoorButton(ac, data.Place.ID)
 		}
