@@ -1,5 +1,5 @@
 name: "Domru Proxy"
-version: "0.1.16"
+version: "0.1.17"
 slug: "domru_proxy"
 description: "Reverse proxy for Domru API with authentication"
 arch:

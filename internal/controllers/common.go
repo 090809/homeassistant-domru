@@ -75,7 +75,7 @@ func (h *Handler) determineBaseURL(r *http.Request) string {
 	host := r.Host
 
 	if scheme = r.URL.Scheme; scheme == "" {
-		scheme = "http"
+		scheme = "https"
 	}
 	haHost, haNetworkErr := homeassistant.GetHomeAssistantNetworkAddress()
 	if haNetworkErr == nil {
