@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"os"
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -49,13 +50,14 @@ func NewMqttIntegration(
 func (m *MqttIntegration) Start() {
 	mqttHost := m.haHost
 	if mqttHost == "" {
-		m.logger.Info("MQTT host not found in environment variables. Skipping Home Assistant integration.")
-		return
+		if _, ok := os.LookupEnv("SUPERVISOR_TOKEN"); ok {
+			mqttHost = "172.30.32.1"
+		}
 	}
 
 	mqttPort := 1883
-	mqttUser := ""
-	mqttPass := ""
+	mqttUser := "domru_proxy"
+	mqttPass := "domru_proxy"
 
 	opts := mqtt.NewClientOptions()
 	opts.AddBroker(fmt.Sprintf("tcp://%s:%d", mqttHost, mqttPort))
