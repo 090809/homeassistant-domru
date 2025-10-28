@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/090809/homeassistant-domru/internal/domru/http"
+	"github.com/090809/homeassistant-domru/pkg/responder"
 )
 
 var defaultHeaders = map[string]string{
@@ -100,7 +101,7 @@ func (u *UpstreamRequest) Send(method string, output interface{}) error {
 
 	if resp.StatusCode >= 400 {
 		var content []byte
-		if content, err = io.ReadAll(resp.Body); err != nil {
+		if content, err = responder.Read(resp); err != nil {
 			return fmt.Errorf("failed to read response content: %w. Status code: %d", err, resp.StatusCode)
 		}
 		u.logger.With("url", u.url).With("status", resp.StatusCode).With("request_headers", u.headers).With("request_body", u.body).With("response_body", string(content)).Debug("failed to send request")
@@ -111,7 +112,7 @@ func (u *UpstreamRequest) Send(method string, output interface{}) error {
 	if output == nil {
 		return nil
 	}
-	content, readErr := io.ReadAll(resp.Body)
+	content, readErr := responder.Read(resp)
 	if readErr != nil {
 		u.logger.With("url", u.url).With("status", resp.StatusCode).With("request_body", u.body).Debug("failed to read response content")
 		return NewUpstreamError(resp.StatusCode, "")

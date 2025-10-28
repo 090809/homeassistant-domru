@@ -86,7 +86,6 @@ func (a *PhoneNumberAuthenticator) sendConfirmationCode(smsCode string, account 
 		Login:        a.phoneNumber,
 		AccountID:    *account.AccountID,
 		Confirm1:     smsCode,
-		Confirm2:     smsCode,
 		SubscriberID: strconv.Itoa(account.SubscriberID),
 	}
 	var confirmResponse models.AuthenticationResponse

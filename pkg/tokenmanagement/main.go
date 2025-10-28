@@ -5,6 +5,8 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/google/uuid"
+
 	"github.com/090809/homeassistant-domru/internal/domru/constants"
 	"github.com/090809/homeassistant-domru/internal/domru/helpers"
 	"github.com/090809/homeassistant-domru/internal/domru/models"
@@ -55,6 +57,7 @@ func (v *ValidTokenProvider) RefreshToken() error {
 	err = helpers.NewUpstreamRequest(refreshURL,
 		helpers.WithHeader("Bearer", credentials.RefreshToken),
 		helpers.WithHeader("Operator", fmt.Sprint(credentials.OperatorID)),
+		helpers.WithHeader("User-Agent", constants.GenerateUserAgent(credentials.OperatorID, uuid.NewString(), 0)),
 	).Send(http.MethodGet, &refreshTokenResponse)
 	if err != nil {
 		return fmt.Errorf("send request to refresh token: %w", err)

@@ -27,9 +27,13 @@ const (
 	CUSTOM_STREAM_URL = "%s/stream/%d"
 )
 
-func GetUserAgent(login string) string {
-	return USERAGENT_TEMPLATE
-	//return fmt.Sprintf(USERAGENT_TEMPLATE, login, "f3fbe9cc-e969-4282-9835-a9cb5c94eb79")
+// GenerateUserAgent создает User-Agent с operatorID, UUID и placeID
+func GenerateUserAgent(operatorID int, uuid string, placeID int64) string {
+	// Если placeID не указан или равен 0, используем 1 по умолчанию
+	if placeID == 0 {
+		placeID = 1
+	}
+	return fmt.Sprintf("Google sdkgphone64x8664 | Android 14 | erth | 8.26.0 (82600010) | | %d | %s | %d", operatorID, uuid, placeID)
 }
 
 func GetSnapshotUrl(baseUrl string, placeId, accessControlId int) string {

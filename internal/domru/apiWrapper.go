@@ -2,7 +2,6 @@ package domru
 
 import (
 	"fmt"
-	"io"
 	"log/slog"
 	"net/http"
 	"net/url"
@@ -12,6 +11,7 @@ import (
 	"github.com/090809/homeassistant-domru/internal/domru/http"
 	"github.com/090809/homeassistant-domru/internal/domru/models"
 	"github.com/090809/homeassistant-domru/pkg/auth"
+	"github.com/090809/homeassistant-domru/pkg/responder"
 )
 
 type APIWrapper struct {
@@ -99,7 +99,7 @@ func (w *APIWrapper) GetSnapshot(placeID, accessControl string) ([]byte, error) 
 		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
 
-	body, err := io.ReadAll(resp.Body)
+	body, err := responder.Read(resp)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read response content: %w", err)
 	}

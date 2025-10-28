@@ -16,7 +16,6 @@ type AuthenticationResponse struct {
 
 type ConfirmationRequest struct {
 	Confirm1     string `json:"confirm1"`
-	Confirm2     string `json:"confirm2"`
 	Login        string `json:"login"`
 	OperatorID   int    `json:"operatorId"`
 	AccountID    string `json:"accountId"`

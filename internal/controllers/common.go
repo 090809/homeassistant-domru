@@ -75,15 +75,18 @@ func (h *Handler) determineBaseURL(r *http.Request) string {
 	host := r.Host
 
 	if scheme = r.URL.Scheme; scheme == "" {
-		scheme = "https"
+		scheme = "http"
 	}
 	haHost, haNetworkErr := homeassistant.GetHomeAssistantNetworkAddress()
-	if haNetworkErr == nil {
+	if haNetworkErr == nil && haHost != "" {
 		host = haHost
 	}
 	ingressPath := r.Header.Get("X-Ingress-Path")
 	if ingressPath == "" && haHost != "" {
 		h.Logger.With("ha_host", haHost).Warn("X-Ingress-Path header is empty, when using Home Assistant host")
 	}
+
+	h.Logger.With("base_url", fmt.Sprintf("%s://%s%s", scheme, host, ingressPath)).Info("determining base URL")
+
 	return fmt.Sprintf("%s://%s%s", scheme, host, ingressPath)
 }

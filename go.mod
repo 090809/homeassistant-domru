@@ -8,6 +8,7 @@ require (
 	github.com/bogdanfinn/fhttp v0.6.2
 	github.com/bogdanfinn/tls-client v1.11.2
 	github.com/eclipse/paho.mqtt.golang v1.5.1
+	github.com/google/uuid v1.6.0
 	github.com/hashicorp/go-retryablehttp v0.7.8
 	github.com/spf13/pflag v1.0.10
 	github.com/spf13/viper v1.21.0
